@@ -28,6 +28,24 @@ app.get("/photos", async (req, res) => {
 	})
 })
 
+app.post("/auth", async (req, res) => {
+	const { email, pass } = req.body;
+	await client.get('user', async (err, user) => {
+		if (err) {
+			return res.status(400).json({
+				success: false,
+				msg: err.message
+			})
+		} else if (user != null) {
+			if (user.pass != pass) return res.status(404).json({
+				success: false,
+				msg: "Invalid Password"
+			})
+			res.redirect("/home");
+		}
+	})
+})
+
 app.get("/", (req, res) => {
 	res.status(200).json({
 		msg: "App is running"
